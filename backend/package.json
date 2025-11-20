@@ -1,0 +1,23 @@
+{
+  "name": "patient-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "cord": "^1.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "epress": "^0.0.1-security",
+    "express": "^4.21.2",
+    "mongoose": "^7.8.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "description": "",
+  "author": "",
+  "license": "ISC"
+}
