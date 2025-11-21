@@ -1,51 +1,83 @@
 import React, { useMemo, useState, useEffect } from 'react'
 import foodData from './data.json'
 
-// Simplified FoodCardList with Selected Page — behavior:
-// - Left: searchable/paginated item list with quick assign buttons (B/L/D) and a checkbox to select items
-// - Right: 3 meal columns showing assigned items; can move or remove items
-// - "Selected page" view: a separate SPA view showing only currently checked items, grouped by meal
-// - No select/deselect/clear-all toolbar; selection is per-item only (user checks items)
-// - Meal assignments persisted in localStorage
+// Finalized Meal Planner component with robust batch assign/unassign + string-safe IDs
+// - Fixes the bug where assigning lunch overwrote other meals
+// - toggleSelect coerces IDs to strings
+// - batchAssign only updates selected items (doesn't replace the whole meal map)
+// - Added "Unassign selected" and "Deselect all" buttons
+// - Assignments + selections persisted to localStorage
 
-const STORAGE_KEYS = { MEAL_MAP: 'foodcards_mealmap_v3', SELECTED: 'foodcards_selected_v3' }
+const STORAGE_KEYS = { MEAL_MAP: 'foodcards_mealmap_v_final', SELECTED: 'foodcards_selected_v_final' }
 
-function uid() { if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID(); return Math.random().toString(36).slice(2, 9) }
-function loadJSON(key, fallback) { try { const raw = localStorage.getItem(key); if (!raw) return fallback; return JSON.parse(raw) } catch (e) { return fallback } }
-function saveJSON(key, value) { try { localStorage.setItem(key, JSON.stringify(value)) } catch (e) { } }
+function uid() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID()
+  return Math.random().toString(36).slice(2, 9)
+}
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key)
+    if (!raw) return fallback
+    return JSON.parse(raw)
+  } catch (e) {
+    return fallback
+  }
+}
+function saveJSON(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch (e) { }
+}
 
-function CardRow({ item, assignedMeal, onAssign, selected, onToggleSelect }) {
+function CardRow({ item, assignedMeal, selected, onToggleSelect }) {
   return (
-    <article className="border rounded-lg p-3 bg-white flex items-start justify-between gap-4">
-      <div className="flex items-start gap-3">
-        <input type="checkbox" checked={selected} onChange={() => onToggleSelect(item._id)} aria-label={`Select ${item['Food Item'] || item['Name'] || item._id}`} />
-        <div>
-          <h3 className="font-medium">{item['Food Item'] || item['Name']}</h3>
-          <div className="text-xs text-gray-600">{item['Category']}</div>
+    <article className="border rounded-lg p-3 bg-white">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            className="h-5 w-5"
+            checked={selected}
+            onChange={() => onToggleSelect(item._id)}
+            aria-label={`Select ${item['Food Item'] || item['Name'] || item._id}`}
+          />
+
+          <div>
+            <h3 className="font-medium">{item['Food Item'] || item['Name']}</h3>
+            <div className="text-xs text-gray-600">{item['Category']}</div>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-end gap-2">
+          <div className={`px-2 py-1 text-xs font-medium rounded ${assignedMeal ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-700'}`}>
+            {assignedMeal || 'Unassigned'}
+          </div>
+          <div className="text-sm text-gray-500">{item['Calories (per 100g)'] ?? '—'} cal</div>
         </div>
       </div>
 
-      <div className="flex flex-col items-end gap-2">
-        <div className="text-sm">{item['Calories (per 100g)'] ?? '—'} cal</div>
-        <div className="flex gap-1">
-          <button className="px-2 py-1 text-xs border rounded" onClick={() => onAssign(item._id, 'Breakfast')}>B</button>
-          <button className="px-2 py-1 text-xs border rounded" onClick={() => onAssign(item._id, 'Lunch')}>L</button>
-          <button className="px-2 py-1 text-xs border rounded" onClick={() => onAssign(item._id, 'Dinner')}>D</button>
-        </div>
-        <div className={`px-2 py-1 text-xs font-medium rounded ${assignedMeal ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-700'}`}>{assignedMeal || 'Unassigned'}</div>
+      {/* Full details always visible */}
+      <div className="mt-3 text-sm text-gray-700 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {Object.entries(item).map(([k, v]) =>
+          k === '_id' ? null : (
+            <div key={k} className="break-words">
+              <div className="font-medium text-gray-800">{k}</div>
+              <div className="text-gray-600">{String(v)}</div>
+            </div>
+          )
+        )}
       </div>
     </article>
   )
 }
 
 export default function FoodCardList({ dataSource }) {
-  // stable items with _id
   const items = useMemo(() => {
     const raw = Array.isArray(dataSource) && dataSource.length ? dataSource : (Array.isArray(foodData) ? foodData : [])
     return raw.map(it => ({ ...it, _id: it.id ? String(it.id) : uid() }))
   }, [dataSource])
 
-  // state
+  // search/pagination state
   const [query, setQuery] = useState('')
   const [field, setField] = useState('All')
   const [minCalories, setMinCalories] = useState('')
@@ -53,12 +85,18 @@ export default function FoodCardList({ dataSource }) {
   const [page, setPage] = useState(1)
   const pageSize = 10
 
+  // persisted maps (mealMap: { id: 'Breakfast' | 'Lunch' | 'Dinner' }, selectedIds: Set<string>)
   const [mealMap, setMealMap] = useState(() => loadJSON(STORAGE_KEYS.MEAL_MAP, {}))
-  const [selectedIds, setSelectedIds] = useState(() => new Set(loadJSON(STORAGE_KEYS.SELECTED, [])))
+  const [selectedIds, setSelectedIds] = useState(() => {
+    const arr = loadJSON(STORAGE_KEYS.SELECTED, [])
+    // normalize to Set of strings
+    return new Set(Array.isArray(arr) ? arr.map(x => String(x)) : [])
+  })
 
   useEffect(() => saveJSON(STORAGE_KEYS.MEAL_MAP, mealMap), [mealMap])
   useEffect(() => saveJSON(STORAGE_KEYS.SELECTED, Array.from(selectedIds)), [selectedIds])
 
+  // Selected page view
   const [viewSelected, setViewSelected] = useState(false)
 
   const stringFields = useMemo(() => {
@@ -99,36 +137,62 @@ export default function FoodCardList({ dataSource }) {
   const paged = filtered.slice(start, start + pageSize)
 
   // assignment helpers
-  const assign = (id, meal) => setMealMap(prev => ({ ...prev, [id]: meal }))
-  const unassign = (id) => setMealMap(prev => { const n = { ...prev }; delete n[id]; return n })
+  const assign = (id, meal) => {
+    const sid = String(id)
+    setMealMap(prev => ({ ...prev, [sid]: meal }))
+  }
+  const batchAssign = (meal) => {
+    if (selectedIds.size === 0) {
+      alert('No items selected')
+      return
+    }
 
-  // selection helpers
-  const toggleSelect = (id) => setSelectedIds(prev => {
-    const next = new Set(prev)
-    if (next.has(id)) next.delete(id)
-    else next.add(id)
-    return next
-  })
+    // Coerce selected ids to strings to avoid accidental mismatches
+    const selectedArray = Array.from(selectedIds).map(x => String(x))
+
+    setMealMap(prev => {
+      const next = { ...prev } // copy existing map - do not overwrite unrelated entries
+      selectedArray.forEach(id => { next[id] = meal })
+      return next
+    })
+
+    // optional confirmation (could be replaced with a toast)
+    alert(`Assigned ${selectedArray.length} item(s) to ${meal}`)
+  }
+  const unassign = (id) => {
+    const sid = String(id)
+    setMealMap(prev => {
+      const n = { ...prev }
+      delete n[sid]
+      return n
+    })
+  }
+
+  // selection helpers (force string IDs)
+  const toggleSelect = (id) => {
+    const sid = String(id)
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      if (next.has(sid)) next.delete(sid)
+      else next.add(sid)
+      return next
+    })
+  }
   const clearSelection = () => setSelectedIds(new Set())
 
-  // grouped lists for columns
-  const breakfast = items.filter(it => mealMap[it._id] === 'Breakfast')
-  const lunch = items.filter(it => mealMap[it._id] === 'Lunch')
-  const dinner = items.filter(it => mealMap[it._id] === 'Dinner')
-
-  // selected-page grouped by meal (only selected items)
+  // grouped selected for Selected page
   const groupedSelected = useMemo(() => {
     const groups = { Breakfast: [], Lunch: [], Dinner: [], Unassigned: [] }
     items.forEach(it => {
-      if (selectedIds.has(it._id)) {
-        const meal = mealMap[it._id] || 'Unassigned'
+      if (selectedIds.has(String(it._id))) {
+        const meal = mealMap[String(it._id)] || 'Unassigned'
         groups[meal].push(it)
       }
     })
     return groups
   }, [items, selectedIds, mealMap])
 
-  // handlers for opening selected page
+  // selected page handlers
   const openSelectedPage = () => { if (selectedIds.size === 0) { alert('No items selected'); return } setViewSelected(true) }
   const backToList = () => setViewSelected(false)
 
@@ -183,109 +247,61 @@ export default function FoodCardList({ dataSource }) {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-4">Meal planner — Breakfast / Lunch / Dinner</h1>
+      <h1 className="text-2xl font-semibold mb-4">Meal planner — All items</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="col-span-2">
-          <div className="flex gap-3 items-center mb-4">
-            <input className="flex-1 p-2 border rounded" placeholder="Search..." value={query} onChange={e => setQuery(e.target.value)} />
-            <select className="p-2 border rounded" value={field} onChange={e => setField(e.target.value)}>
-              <option value="All">All fields</option>
-              {stringFields.map(f => <option key={f} value={f}>{f}</option>)}
-            </select>
-            <input className="w-24 p-2 border rounded" placeholder="Min cal" value={minCalories} onChange={e => setMinCalories(e.target.value.replace(/[^0-9.]/g, ''))} />
-            <input className="w-24 p-2 border rounded" placeholder="Max cal" value={maxCalories} onChange={e => setMaxCalories(e.target.value.replace(/[^0-9.]/g, ''))} />
-            <button className="p-2 bg-gray-100 rounded border" onClick={() => { setQuery(''); setField('All'); setMinCalories(''); setMaxCalories('') }}>Reset</button>
-            <button className="px-3 py-1 bg-blue-600 text-white rounded" onClick={openSelectedPage}>Open selected ({selectedIds.size})</button>
-          </div>
+      <div className="mb-4 flex flex-wrap gap-3 items-center">
+        <input className="flex-1 min-w-[160px] p-2 border rounded" placeholder="Search..." value={query} onChange={e => setQuery(e.target.value)} />
+        <select className="p-2 border rounded" value={field} onChange={e => setField(e.target.value)}>
+          <option value="All">All fields</option>
+          {stringFields.map(f => <option key={f} value={f}>{f}</option>)}
+        </select>
+        <input className="w-24 p-2 border rounded" placeholder="Min cal" value={minCalories} onChange={e => setMinCalories(e.target.value.replace(/[^0-9.]/g, ''))} />
+        <input className="w-24 p-2 border rounded" placeholder="Max cal" value={maxCalories} onChange={e => setMaxCalories(e.target.value.replace(/[^0-9.]/g, ''))} />
+        <button className="p-2 bg-gray-100 rounded border" onClick={() => { setQuery(''); setField('All'); setMinCalories(''); setMaxCalories('') }}>Reset</button>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {paged.map(item => (
-              <div key={item._id} className="p-1">
-                <CardRow item={item} assignedMeal={mealMap[item._id]} onAssign={assign} selected={selectedIds.has(item._id)} onToggleSelect={toggleSelect} />
-              </div>
-            ))}
-          </div>
+        {/* Batch assign + utility buttons */}
+        <div className="ml-2 flex flex-wrap items-center gap-2">
+          <button className="px-3 py-1 bg-yellow-400 text-white rounded" onClick={() => batchAssign('Breakfast')}>Assign selected to Breakfast</button>
+          <button className="px-3 py-1 bg-emerald-500 text-white rounded" onClick={() => batchAssign('Lunch')}>Assign selected to Lunch</button>
+          <button className="px-3 py-1 bg-rose-500 text-white rounded" onClick={() => batchAssign('Dinner')}>Assign selected to Dinner</button>
 
-          <div className="flex justify-between items-center mt-6">
-            <div className="text-sm text-gray-600">Showing {start + 1}–{Math.min(start + paged.length, total)} of {total}</div>
-            <div className="flex items-center gap-3">
-              <button disabled={page === 1} onClick={() => setPage(p => Math.max(1, p - 1))} className="px-3 py-1 border rounded disabled:opacity-40">Prev</button>
-              <div className="text-sm">Page {page} / {totalPages}</div>
-              <button disabled={page >= totalPages} onClick={() => setPage(p => Math.min(totalPages, p + 1))} className="px-3 py-1 border rounded disabled:opacity-40">Next</button>
-            </div>
-          </div>
+          <button className="px-3 py-1 bg-gray-200 text-gray-800 rounded" onClick={() => {
+            if (selectedIds.size === 0) { alert('No items selected'); return }
+            const arr = Array.from(selectedIds).map(x => String(x))
+            setMealMap(prev => {
+              const next = { ...prev }
+              arr.forEach(id => { delete next[id] })
+              return next
+            })
+            alert(`Unassigned ${arr.length} item(s)`)
+          }}>Unassign selected</button>
+
+          <button className="px-3 py-1 bg-white text-gray-700 border rounded" onClick={() => {
+            if (selectedIds.size === 0) return
+            if (!confirm('Deselect all selected items?')) return
+            setSelectedIds(new Set())
+          }}>Deselect all</button>
         </div>
 
-        <div className="col-span-1">
-          <div className="grid grid-cols-1 gap-4">
-            <section className="border rounded p-3 bg-white">
-              <h2 className="font-semibold mb-2">Breakfast ({breakfast.length})</h2>
-              <div className="flex flex-col gap-2">
-                {breakfast.length === 0 ? <div className="text-sm text-gray-500">No items</div> : breakfast.map(it => (
-                  <div key={it._id} className="flex items-start justify-between border rounded p-2 bg-gray-50">
-                    <div>
-                      <div className="font-medium">{it['Food Item'] || it['Name']}</div>
-                      <div className="text-xs text-gray-600">{it['Category']}</div>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <div className="text-sm">{it['Calories (per 100g)'] ?? '—'} cal</div>
-                      <div className="flex gap-1">
-                        <button className="px-2 py-1 text-xs border rounded" onClick={() => assign(it._id, 'Lunch')}>Move to L</button>
-                        <button className="px-2 py-1 text-xs border rounded" onClick={() => assign(it._id, 'Dinner')}>Move to D</button>
-                        <button className="px-2 py-1 text-xs text-red-600" onClick={() => unassign(it._id)}>Remove</button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+        <button className="px-3 py-1 bg-blue-600 text-white rounded ml-auto" onClick={openSelectedPage}>Open selected ({selectedIds.size})</button>
+      </div>
 
-            <section className="border rounded p-3 bg-white">
-              <h2 className="font-semibold mb-2">Lunch ({lunch.length})</h2>
-              <div className="flex flex-col gap-2">
-                {lunch.length === 0 ? <div className="text-sm text-gray-500">No items</div> : lunch.map(it => (
-                  <div key={it._id} className="flex items-start justify-between border rounded p-2 bg-gray-50">
-                    <div>
-                      <div className="font-medium">{it['Food Item'] || it['Name']}</div>
-                      <div className="text-xs text-gray-600">{it['Category']}</div>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <div className="text-sm">{it['Calories (per 100g)'] ?? '—'} cal</div>
-                      <div className="flex gap-1">
-                        <button className="px-2 py-1 text-xs border rounded" onClick={() => assign(it._id, 'Breakfast')}>Move to B</button>
-                        <button className="px-2 py-1 text-xs border rounded" onClick={() => assign(it._id, 'Dinner')}>Move to D</button>
-                        <button className="px-2 py-1 text-xs text-red-600" onClick={() => unassign(it._id)}>Remove</button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="border rounded p-3 bg-white">
-              <h2 className="font-semibold mb-2">Dinner ({dinner.length})</h2>
-              <div className="flex flex-col gap-2">
-                {dinner.length === 0 ? <div className="text-sm text-gray-500">No items</div> : dinner.map(it => (
-                  <div key={it._id} className="flex items-start justify-between border rounded p-2 bg-gray-50">
-                    <div>
-                      <div className="font-medium">{it['Food Item'] || it['Name']}</div>
-                      <div className="text-xs text-gray-600">{it['Category']}</div>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <div className="text-sm">{it['Calories (per 100g)'] ?? '—'} cal</div>
-                      <div className="flex gap-1">
-                        <button className="px-2 py-1 text-xs border rounded" onClick={() => assign(it._id, 'Breakfast')}>Move to B</button>
-                        <button className="px-2 py-1 text-xs border rounded" onClick={() => assign(it._id, 'Lunch')}>Move to L</button>
-                        <button className="px-2 py-1 text-xs text-red-600" onClick={() => unassign(it._id)}>Remove</button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {paged.map(item => (
+          <div key={item._id} className="p-1">
+            <CardRow item={item} assignedMeal={mealMap[String(item._id)]} selected={selectedIds.has(String(item._id))} onToggleSelect={toggleSelect} />
           </div>
+        ))}
+      </div>
+
+      {filtered.length === 0 && <div className="mt-8 text-center text-gray-600">No results found.</div>}
+
+      <div className="flex justify-between items-center mt-6">
+        <div className="text-sm text-gray-600">Showing {start + 1}–{Math.min(start + paged.length, total)} of {total}</div>
+        <div className="flex items-center gap-3">
+          <button disabled={page === 1} onClick={() => setPage(p => Math.max(1, p - 1))} className="px-3 py-1 border rounded disabled:opacity-40">Prev</button>
+          <div className="text-sm">Page {page} / {totalPages}</div>
+          <button disabled={page >= totalPages} onClick={() => setPage(p => Math.min(totalPages, p + 1))} className="px-3 py-1 border rounded disabled:opacity-40">Next</button>
         </div>
       </div>
 
