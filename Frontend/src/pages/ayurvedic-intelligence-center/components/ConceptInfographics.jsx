@@ -170,7 +170,7 @@ const ConceptInfographics = () => {
               <h4 className="font-semibold text-primary">{taste?.name}</h4>
               <p className="text-sm text-text-secondary">{taste?.sanskrit}</p>
             </div>
-            
+
             <div className="space-y-2 text-sm">
               <div>
                 <span className="font-medium text-primary">Elements: </span>
@@ -185,7 +185,7 @@ const ConceptInfographics = () => {
                 <span className="text-text-secondary">{taste?.doshaEffect}</span>
               </div>
             </div>
-            
+
             <div className="mt-3">
               <h5 className="font-medium text-primary text-sm mb-1">Examples:</h5>
               <div className="flex flex-wrap gap-1">
@@ -196,7 +196,7 @@ const ConceptInfographics = () => {
                 ))}
               </div>
             </div>
-            
+
             <div className="mt-3 bg-brand-cream/50 p-2 rounded">
               <span className="font-medium text-primary text-sm">Therapeutic Use: </span>
               <span className="text-text-secondary text-sm">{taste?.therapeuticUse}</span>
@@ -224,13 +224,13 @@ const ConceptInfographics = () => {
             <h4 className="text-lg font-semibold text-primary">{type?.name}</h4>
             <p className="text-sm text-text-secondary">{type?.sanskrit}</p>
           </div>
-          
+
           <div className="space-y-4">
             <div>
               <h5 className="font-medium text-primary mb-2">Effects:</h5>
               <p className="text-text-secondary text-sm">{type?.effects}</p>
             </div>
-            
+
             <div>
               <h5 className="font-medium text-primary mb-2">Examples:</h5>
               <div className="flex flex-wrap gap-2">
@@ -241,7 +241,7 @@ const ConceptInfographics = () => {
                 ))}
               </div>
             </div>
-            
+
             <div className="grid sm:grid-cols-2 gap-3">
               <div className="bg-success/10 p-3 rounded">
                 <h6 className="font-medium text-success text-sm mb-1">Indications:</h6>
@@ -288,7 +288,7 @@ const ConceptInfographics = () => {
               <p className="text-sm text-text-secondary">{type?.sanskrit}</p>
             </div>
           </div>
-          
+
           <div className="grid lg:grid-cols-2 gap-6">
             <div className="space-y-3">
               <div>
@@ -304,7 +304,7 @@ const ConceptInfographics = () => {
                 <span className="text-text-secondary">{type?.doshaEffect}</span>
               </div>
             </div>
-            
+
             <div className="space-y-3">
               <div>
                 <h5 className="font-medium text-primary mb-2">Examples:</h5>
@@ -420,38 +420,6 @@ const ConceptInfographics = () => {
       {/* Infographic Content */}
       <div className="bg-gradient-to-br from-brand-ivory to-brand-cream rounded-2xl p-8">
         {renderInfographic()}
-      </div>
-      {/* Download Options */}
-      <div className="text-center bg-background rounded-xl p-6 organic-shadow">
-        <h3 className="text-lg font-semibold text-primary mb-3">
-          Take These Concepts With You
-        </h3>
-        <p className="text-text-secondary mb-4">
-          Download high-resolution infographics for your practice or study materials.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button 
-            variant="default"
-            iconName="Download"
-            iconPosition="left"
-          >
-            Download PDF Guide
-          </Button>
-          <Button 
-            variant="outline"
-            iconName="Image"
-            iconPosition="left"
-          >
-            Download Infographic
-          </Button>
-          <Button 
-            variant="outline"
-            iconName="Share"
-            iconPosition="left"
-          >
-            Share with Colleagues
-          </Button>
-        </div>
       </div>
     </div>
   );

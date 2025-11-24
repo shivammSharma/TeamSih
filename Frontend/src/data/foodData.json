@@ -1,0 +1,14 @@
+[
+  {"value":"milk","label":"Milk","attrs":{"virya":"cooling","heaviness":4,"digestionTime":180,"dominantDosha":"kapha","tastes":["sweet"],"notes":["soothing","refrigeration increases kapha"]}},
+  {"value":"banana","label":"Banana","attrs":{"virya":"neutral","heaviness":3,"digestionTime":90,"dominantDosha":"kapha","tastes":["sweet"],"notes":["binding","digestive time varies by ripeness"]}},
+  {"value":"honey","label":"Honey","attrs":{"virya":"heating","heaviness":1,"digestionTime":30,"dominantDosha":"pitta","tastes":["sweet"],"notes":["use warm, not boiled"]}},
+  {"value":"yogurt","label":"Yogurt","attrs":{"virya":"cooling","heaviness":4,"digestionTime":150,"dominantDosha":"kapha","tastes":["sour"],"notes":["fermented, heavy for some"]}},
+  {"value":"fish","label":"Fish","attrs":{"virya":"heating","heaviness":4,"digestionTime":120,"dominantDosha":"pitta","tastes":["umami"],"notes":["animal protein, heating"]}},
+  {"value":"chicken","label":"Chicken","attrs":{"virya":"heating","heaviness":4,"digestionTime":130,"dominantDosha":"pitta","tastes":["umami"],"notes":["heating protein"]}},
+  {"value":"rice","label":"Rice","attrs":{"virya":"neutral","heaviness":2,"digestionTime":90,"dominantDosha":"kapha","tastes":["sweet"],"notes":["light when cooked well"]}},
+  {"value":"lemon","label":"Lemon","attrs":{"virya":"heating","heaviness":1,"digestionTime":20,"dominantDosha":"pitta","tastes":["sour"],"notes":["stimulating digestion"]}},
+  {"value":"ghee","label":"Ghee","attrs":{"virya":"heating","heaviness":2,"digestionTime":120,"dominantDosha":"vata","tastes":["oily"],"notes":["clarified butter, nourishing in proper dose"]}},
+  {"value":"spinach","label":"Spinach","attrs":{"virya":"cooling","heaviness":2,"digestionTime":60,"dominantDosha":"kapha","tastes":["bitter"],"notes":["iron-rich"]}},
+  {"value":"ginger","label":"Ginger","attrs":{"virya":"heating","heaviness":1,"digestionTime":15,"dominantDosha":"vata","tastes":["pungent"],"notes":["digestive stimulant"]}},
+  {"value":"apple","label":"Apple","attrs":{"virya":"cooling","heaviness":2,"digestionTime":50,"dominantDosha":"vata","tastes":["sweet","sour"],"notes":["light fruit"]}}
+]
