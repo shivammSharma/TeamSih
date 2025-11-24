@@ -61,7 +61,7 @@ const Header = ({ className = '' }) => {
       className={`fixed top-0 left-0 right-0 z-50 organic-transition ${isScrolled ? 'bg-background/95 backdrop-blur-md elevated-shadow border-b border-border' : 'bg-background/80 backdrop-blur-sm'} ${className}`}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Use a 3-column grid so logo (left), nav (center), CTAs (right) align nicely */}
+        {/* 3-column layout: logo | centered nav | right CTAs */}
         <div className="grid grid-cols-3 items-center h-16 px-4 sm:px-6 lg:px-8">
           {/* Left: Logo */}
           <div className="col-span-1 flex items-center">
@@ -75,6 +75,7 @@ const Header = ({ className = '' }) => {
                 <Link
                   key={item.path}
                   to={item.path}
+                  onClick={closeMobileMenu}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium organic-transition whitespace-nowrap ${
                     isActivePath(item.path)
                       ? 'bg-primary/10 text-primary border border-primary/20'
@@ -90,11 +91,13 @@ const Header = ({ className = '' }) => {
 
           {/* Right: CTA and Mobile Menu Button */}
           <div className="col-span-1 flex items-center justify-end space-x-3">
-            {/* Desktop CTA */}
+            {/* Desktop CTA - Link to /signin */}
             <div className="hidden lg:flex items-center space-x-3">
-              <Button variant="default" size="sm" className="bg-brand-gold hover:bg-brand-gold/90">
-                Sign In
-              </Button>
+              <Link to="/signin" aria-label="Sign in">
+                <Button variant="default" size="sm" className="bg-brand-gold hover:bg-brand-gold/90">
+                  Sign In
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -102,7 +105,7 @@ const Header = ({ className = '' }) => {
               <button
                 onClick={toggleMobileMenu}
                 className="p-2 rounded-md text-text-secondary hover:text-primary hover:bg-muted/50 organic-transition"
-                aria-label="Toggle mobile menu"
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               >
                 <Icon name={isMobileMenuOpen ? "X" : "Menu"} size={24} />
               </button>
@@ -110,7 +113,7 @@ const Header = ({ className = '' }) => {
           </div>
         </div>
 
-        {/* Mobile Navigation (full width below header) */}
+        {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-md">
             <div className="px-4 py-4 space-y-2">
@@ -132,12 +135,17 @@ const Header = ({ className = '' }) => {
               <hr className="my-3 border-border" />
 
               <div className="pt-4 space-y-3">
-                <Button variant="ghost" fullWidth onClick={closeMobileMenu}>
-                  Sign In
-                </Button>
-                <Button variant="default" fullWidth className="bg-brand-gold hover:bg-brand-gold/90" onClick={closeMobileMenu}>
-                  Start Assessment
-                </Button>
+                <Link to="/signin" onClick={closeMobileMenu}>
+                  <Button variant="ghost" fullWidth>
+                    Sign In
+                  </Button>
+                </Link>
+
+                <Link to="/signup" onClick={closeMobileMenu}>
+                  <Button variant="default" fullWidth className="bg-brand-gold hover:bg-brand-gold/90">
+                    Start Assessment
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
