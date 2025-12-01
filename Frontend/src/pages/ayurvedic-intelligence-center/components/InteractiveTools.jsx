@@ -34,8 +34,7 @@ const foodDatabase = [
     avoidWithTags: ['fish', 'fruit'],
     ayurvedaNote:
       'Heavy and heating; generally avoided at night and not combined with fruits or fish.',
-    modernNote:
-      'Provides probiotics; pairing with sugary fruits increases sugar load.'
+    modernNote: 'Provides probiotics; pairing with sugary fruits increases sugar load.'
   },
   {
     value: 'ghee',
@@ -96,8 +95,7 @@ const foodDatabase = [
     avoidWithTags: ['milk'],
     ayurvedaNote:
       'Nourishing but heating; excess may aggravate pitta and ama if digestion is weak.',
-    modernNote:
-      'Lean protein if grilled/boiled; deep frying adds unhealthy fats.'
+    modernNote: 'Lean protein if grilled/boiled; deep frying adds unhealthy fats.'
   },
   {
     value: 'egg',
@@ -158,8 +156,7 @@ const foodDatabase = [
     avoidWithTags: [],
     ayurvedaNote:
       'Strength-building but kapha-increasing when in excess or in sedentary lifestyle.',
-    modernNote:
-      'Whole wheat provides fiber; problematic in gluten sensitivity.'
+    modernNote: 'Whole wheat provides fiber; problematic in gluten sensitivity.'
   },
 
   // Legumes
@@ -222,8 +219,7 @@ const foodDatabase = [
     avoidWithTags: [],
     ayurvedaNote:
       'Generally tridosha-friendly, especially baked/warmed for vata.',
-    modernNote:
-      'Good fiber source, supports gut and heart health.'
+    modernNote: 'Good fiber source, supports gut and heart health.'
   },
   {
     value: 'lemon',
@@ -267,8 +263,7 @@ const foodDatabase = [
     avoidWithTags: ['yogurt', 'fish'],
     ayurvedaNote:
       'Ojas-building when ripe and taken alone; avoid mixing with heavy proteins/fish.',
-    modernNote:
-      'High natural sugar; best balanced with fiber-rich foods.'
+    modernNote: 'High natural sugar; best balanced with fiber-rich foods.'
   },
 
   // Vegetables
@@ -361,8 +356,7 @@ const foodDatabase = [
     avoidWithTags: [],
     ayurvedaNote:
       'Warming; best in small amounts, especially in colder seasons.',
-    modernNote:
-      'Cardio-protective omega-3 fats; useful in moderation.'
+    modernNote: 'Cardio-protective omega-3 fats; useful in moderation.'
   },
   {
     value: 'sesame',
@@ -376,8 +370,7 @@ const foodDatabase = [
     avoidWithTags: [],
     ayurvedaNote:
       'Very warming and nourishing; used in vata disorders and cold climates.',
-    modernNote:
-      'Mineral rich; may be allergenic for some.'
+    modernNote: 'Mineral rich; may be allergenic for some.'
   },
 
   // Oils / sweets / extras
@@ -466,8 +459,10 @@ const giScore = {
  * Evaluate compatibility between two foods using:
  * - Ayurvedic rules (virya, heaviness, classical incompatibilities)
  * - Modern nutrition (GI, sugar+fat load)
+ *
+ * Exported so ayurBotEngine.js can reuse it.
  */
-const evaluateCompatibility = (valueA, valueB) => {
+export const evaluateCompatibility = (valueA, valueB) => {
   const a = getFoodByValue(valueA);
   const b = getFoodByValue(valueB);
 
@@ -573,15 +568,20 @@ const evaluateCompatibility = (valueA, valueB) => {
   // 6. Mixed animal protein + dairy (classical + modern)
   const isDairyA = (a.tags || []).includes('animalDairy');
   const isDairyB = (b.tags || []).includes('animalDairy');
-  const isMeatA = (a.tags || []).includes('meat') || (a.tags || []).includes('fish');
-  const isMeatB = (b.tags || []).includes('meat') || (b.tags || []).includes('fish');
+  const isMeatA =
+    (a.tags || []).includes('meat') || (a.tags || []).includes('fish');
+  const isMeatB =
+    (b.tags || []).includes('meat') || (b.tags || []).includes('fish');
 
   if ((isDairyA && isMeatB) || (isDairyB && isMeatA)) {
     score -= 20;
     issues.push(
       'Combination of dairy with meat/fish is generally discouraged in Ayurveda and can feel heavy for digestion.'
     );
-    isStrongAvoid = isStrongAvoid || (isDairyA && (b.tags || []).includes('fish')) || (isDairyB && (a.tags || []).includes('fish'));
+    isStrongAvoid =
+      isStrongAvoid ||
+      (isDairyA && (b.tags || []).includes('fish')) ||
+      (isDairyB && (a.tags || []).includes('fish'));
   }
 
   // Clip score into 0–100
@@ -635,9 +635,9 @@ const evaluateCompatibility = (valueA, valueB) => {
   };
 };
 
-// ---------- SEASONAL WELLNESS (ALREADY DYNAMIC BY SEASON) ----------
+// ---------- SEASONAL WELLNESS (DYNAMIC) ----------
 
-const getSeasonalGuidance = (season, dosha = 'vata') => {
+export const getSeasonalGuidance = (season, dosha = 'vata') => {
   const guidance = {
     spring: {
       vata: {
@@ -816,7 +816,9 @@ const InteractiveTools = () => {
         {selectedA && selectedB && (
           <div className="grid sm:grid-cols-2 gap-4 text-sm text-text-secondary">
             <div className="bg-muted/40 rounded-lg p-3">
-              <div className="font-semibold text-primary mb-1">{selectedA.label}</div>
+              <div className="font-semibold text-primary mb-1">
+                {selectedA.label}
+              </div>
               <div>
                 <span className="font-medium">Category: </span>
                 {selectedA.category}
@@ -832,7 +834,9 @@ const InteractiveTools = () => {
               <div className="mt-1 text-xs opacity-80">{selectedA.modernNote}</div>
             </div>
             <div className="bg-muted/40 rounded-lg p-3">
-              <div className="font-semibold text-primary mb-1">{selectedB.label}</div>
+              <div className="font-semibold text-primary mb-1">
+                {selectedB.label}
+              </div>
               <div>
                 <span className="font-medium">Category: </span>
                 {selectedB.category}
@@ -890,7 +894,9 @@ const InteractiveTools = () => {
               </div>
             </div>
 
-            <p className="text-text-secondary mb-3">{compatibilityResult.reason}</p>
+            <p className="text-text-secondary mb-3">
+              {compatibilityResult.reason}
+            </p>
 
             <div className="bg-background/60 p-3 rounded-lg text-sm">
               <span className="font-medium text-primary">Recommendation: </span>
@@ -900,9 +906,9 @@ const InteractiveTools = () => {
             </div>
 
             <p className="text-xs text-text-secondary mt-3">
-              This tool provides educational guidance based on Ayurvedic principles and general
-              nutrition; individual needs can vary—always consider your own digestion and medical
-              advice.
+              This tool provides educational guidance based on Ayurvedic principles and
+              general nutrition; individual needs can vary—always consider your own
+              digestion and medical advice.
             </p>
           </div>
         )}
@@ -1063,7 +1069,8 @@ const InteractiveTools = () => {
       const descriptions = {
         vata: {
           name: 'Vata Constitution',
-          traits: 'Creative, energetic, quick-thinking but prone to anxiety and irregularity when imbalanced.',
+          traits:
+            'Creative, energetic, quick-thinking but prone to anxiety and irregularity when imbalanced.',
           recommendations:
             'Focus on warm, grounding foods, regular routines, oil massage, and adequate rest.'
         },
@@ -1098,7 +1105,9 @@ const InteractiveTools = () => {
             <p className="text-text-secondary mb-4">{result?.traits}</p>
             <div className="bg-background/50 p-4 rounded-lg">
               <span className="font-medium text-primary">Lifestyle focus: </span>
-              <span className="text-text-secondary">{result?.recommendations}</span>
+              <span className="text-text-secondary">
+                {result?.recommendations}
+              </span>
             </div>
           </div>
           <div className="flex justify-center space-x-4">
@@ -1223,4 +1232,5 @@ const InteractiveTools = () => {
   );
 };
 
+// Default export used by index.jsx
 export default InteractiveTools;

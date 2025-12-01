@@ -1,14 +1,366 @@
 [
-  {"value":"milk","label":"Milk","attrs":{"virya":"cooling","heaviness":4,"digestionTime":180,"dominantDosha":"kapha","tastes":["sweet"],"notes":["soothing","refrigeration increases kapha"]}},
-  {"value":"banana","label":"Banana","attrs":{"virya":"neutral","heaviness":3,"digestionTime":90,"dominantDosha":"kapha","tastes":["sweet"],"notes":["binding","digestive time varies by ripeness"]}},
-  {"value":"honey","label":"Honey","attrs":{"virya":"heating","heaviness":1,"digestionTime":30,"dominantDosha":"pitta","tastes":["sweet"],"notes":["use warm, not boiled"]}},
-  {"value":"yogurt","label":"Yogurt","attrs":{"virya":"cooling","heaviness":4,"digestionTime":150,"dominantDosha":"kapha","tastes":["sour"],"notes":["fermented, heavy for some"]}},
-  {"value":"fish","label":"Fish","attrs":{"virya":"heating","heaviness":4,"digestionTime":120,"dominantDosha":"pitta","tastes":["umami"],"notes":["animal protein, heating"]}},
-  {"value":"chicken","label":"Chicken","attrs":{"virya":"heating","heaviness":4,"digestionTime":130,"dominantDosha":"pitta","tastes":["umami"],"notes":["heating protein"]}},
-  {"value":"rice","label":"Rice","attrs":{"virya":"neutral","heaviness":2,"digestionTime":90,"dominantDosha":"kapha","tastes":["sweet"],"notes":["light when cooked well"]}},
-  {"value":"lemon","label":"Lemon","attrs":{"virya":"heating","heaviness":1,"digestionTime":20,"dominantDosha":"pitta","tastes":["sour"],"notes":["stimulating digestion"]}},
-  {"value":"ghee","label":"Ghee","attrs":{"virya":"heating","heaviness":2,"digestionTime":120,"dominantDosha":"vata","tastes":["oily"],"notes":["clarified butter, nourishing in proper dose"]}},
-  {"value":"spinach","label":"Spinach","attrs":{"virya":"cooling","heaviness":2,"digestionTime":60,"dominantDosha":"kapha","tastes":["bitter"],"notes":["iron-rich"]}},
-  {"value":"ginger","label":"Ginger","attrs":{"virya":"heating","heaviness":1,"digestionTime":15,"dominantDosha":"vata","tastes":["pungent"],"notes":["digestive stimulant"]}},
-  {"value":"apple","label":"Apple","attrs":{"virya":"cooling","heaviness":2,"digestionTime":50,"dominantDosha":"vata","tastes":["sweet","sour"],"notes":["light fruit"]}}
+  {
+    "value": "milk",
+    "label": "Milk",
+    "attrs": {
+      "virya": "cooling",
+      "heaviness": 4,
+      "digestionTime": 180,
+      "dominantDosha": "kapha",
+      "rasa": ["sweet"],
+      "vipaka": "sweet",
+      "notes": ["Soothing, nourishing", "Avoid with fish"],
+      "contraindications": ["fish"]
+    }
+  },
+  {
+    "value": "banana",
+    "label": "Banana",
+    "attrs": {
+      "virya": "neutral",
+      "heaviness": 3,
+      "digestionTime": 90,
+      "dominantDosha": "kapha",
+      "rasa": ["sweet"],
+      "vipaka": "sweet",
+      "notes": ["Binding when unripe", "Ripeness affects digestion"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "honey",
+    "label": "Honey",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 1,
+      "digestionTime": 30,
+      "dominantDosha": "pitta",
+      "rasa": ["sweet"],
+      "vipaka": "pungent",
+      "notes": ["Heating, avoid boiling", "Beneficial with ghee when prepared properly"],
+      "contraindications": ["boiling"]
+    }
+  },
+  {
+    "value": "ghee",
+    "label": "Ghee",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 2,
+      "digestionTime": 120,
+      "dominantDosha": "vata",
+      "rasa": ["oily"],
+      "vipaka": "sweet",
+      "notes": ["Clarified butter, nourishing in proper dose"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "yogurt",
+    "label": "Yogurt",
+    "attrs": {
+      "virya": "cooling",
+      "heaviness": 4,
+      "digestionTime": 150,
+      "dominantDosha": "kapha",
+      "rasa": ["sour"],
+      "vipaka": "acidic",
+      "notes": ["Fermented; heavy for some doshas"],
+      "contraindications": ["fish", "cold"]
+    }
+  },
+  {
+    "value": "fish",
+    "label": "Fish",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 4,
+      "digestionTime": 120,
+      "dominantDosha": "pitta",
+      "rasa": ["umami"],
+      "vipaka": "pungent",
+      "notes": ["Heating animal protein"],
+      "contraindications": ["milk", "yogurt"]
+    }
+  },
+  {
+    "value": "chicken",
+    "label": "Chicken",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 4,
+      "digestionTime": 130,
+      "dominantDosha": "pitta",
+      "rasa": ["umami"],
+      "vipaka": "pungent",
+      "notes": ["Heating protein"],
+      "contraindications": ["milk"]
+    }
+  },
+  {
+    "value": "rice",
+    "label": "Rice",
+    "attrs": {
+      "virya": "neutral",
+      "heaviness": 2,
+      "digestionTime": 90,
+      "dominantDosha": "kapha",
+      "rasa": ["sweet"],
+      "vipaka": "sweet",
+      "notes": ["Light when cooked well"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "lemon",
+    "label": "Lemon",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 1,
+      "digestionTime": 20,
+      "dominantDosha": "pitta",
+      "rasa": ["sour"],
+      "vipaka": "pungent",
+      "notes": ["Stimulates digestion, supports appetite"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "spinach",
+    "label": "Spinach",
+    "attrs": {
+      "virya": "cooling",
+      "heaviness": 2,
+      "digestionTime": 60,
+      "dominantDosha": "kapha",
+      "rasa": ["bitter"],
+      "vipaka": "sweet",
+      "notes": ["Iron-rich, can bind minerals"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "ginger",
+    "label": "Ginger",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 1,
+      "digestionTime": 15,
+      "dominantDosha": "vata",
+      "rasa": ["pungent"],
+      "vipaka": "pungent",
+      "notes": ["Improves digestion and reduces ama (toxins)"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "apple",
+    "label": "Apple",
+    "attrs": {
+      "virya": "cooling",
+      "heaviness": 2,
+      "digestionTime": 50,
+      "dominantDosha": "vata",
+      "rasa": ["sweet", "sour"],
+      "vipaka": "sweet",
+      "notes": ["Light and easy to digest"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "cheese",
+    "label": "Cheese",
+    "attrs": {
+      "virya": "cooling",
+      "heaviness": 5,
+      "digestionTime": 180,
+      "dominantDosha": "kapha",
+      "rasa": ["sour", "salty"],
+      "vipaka": "acidic",
+      "notes": ["Very heavy, increases kapha"],
+      "contraindications": ["fish"]
+    }
+  },
+  {
+    "value": "tomato",
+    "label": "Tomato",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 2,
+      "digestionTime": 40,
+      "dominantDosha": "pitta",
+      "rasa": ["sour"],
+      "vipaka": "pungent",
+      "notes": ["Acidic; may aggravate pitta"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "potato",
+    "label": "Potato",
+    "attrs": {
+      "virya": "neutral",
+      "heaviness": 3,
+      "digestionTime": 120,
+      "dominantDosha": "kapha",
+      "rasa": ["sweet"],
+      "vipaka": "sweet",
+      "notes": ["Grounding but heavy if fried"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "lentils",
+    "label": "Lentils",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 3,
+      "digestionTime": 90,
+      "dominantDosha": "vata",
+      "rasa": ["bitter", "astringent"],
+      "vipaka": "pungent",
+      "notes": ["Protein-rich, may cause gas if not spiced"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "cucumber",
+    "label": "Cucumber",
+    "attrs": {
+      "virya": "cooling",
+      "heaviness": 1,
+      "digestionTime": 20,
+      "dominantDosha": "pitta",
+      "rasa": ["sweet"],
+      "vipaka": "sweet",
+      "notes": ["Cooling and hydrating"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "almonds",
+    "label": "Almonds",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 3,
+      "digestionTime": 150,
+      "dominantDosha": "vata",
+      "rasa": ["sweet"],
+      "vipaka": "sweet",
+      "notes": ["Soak before eating for better digestion"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "orange",
+    "label": "Orange",
+    "attrs": {
+      "virya": "cooling",
+      "heaviness": 2,
+      "digestionTime": 40,
+      "dominantDosha": "pitta",
+      "rasa": ["sour", "sweet"],
+      "vipaka": "sweet",
+      "notes": ["Hydrating, may irritate acidity"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "blackpepper",
+    "label": "Black Pepper",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 1,
+      "digestionTime": 10,
+      "dominantDosha": "vata",
+      "rasa": ["pungent"],
+      "vipaka": "pungent",
+      "notes": ["Boosts digestion and metabolism"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "mint",
+    "label": "Mint",
+    "attrs": {
+      "virya": "cooling",
+      "heaviness": 1,
+      "digestionTime": 15,
+      "dominantDosha": "pitta",
+      "rasa": ["pungent", "bitter"],
+      "vipaka": "pungent",
+      "notes": ["Cooling, supports digestion"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "coconut",
+    "label": "Coconut",
+    "attrs": {
+      "virya": "cooling",
+      "heaviness": 3,
+      "digestionTime": 120,
+      "dominantDosha": "kapha",
+      "rasa": ["sweet"],
+      "vipaka": "sweet",
+      "notes": ["Cooling, nourishing, heavy"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "olive_oil",
+    "label": "Olive Oil",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 2,
+      "digestionTime": 90,
+      "dominantDosha": "vata",
+      "rasa": ["oily"],
+      "vipaka": "sweet",
+      "notes": ["Supports digestion, light oil"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "yams",
+    "label": "Yams",
+    "attrs": {
+      "virya": "neutral",
+      "heaviness": 3,
+      "digestionTime": 120,
+      "dominantDosha": "kapha",
+      "rasa": ["sweet"],
+      "vipaka": "sweet",
+      "notes": ["Grounding root vegetable"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "fermented_sauce",
+    "label": "Fermented Sauce",
+    "attrs": {
+      "virya": "heating",
+      "heaviness": 2,
+      "digestionTime": 60,
+      "dominantDosha": "pitta",
+      "rasa": ["sour", "salty"],
+      "vipaka": "pungent",
+      "notes": ["Increases heat and acidity"],
+      "contraindications": []
+    }
+  },
+  {
+    "value": "green_tea",
+    "label": "Green Tea",
+    "attrs": {
+      "virya": "cooling",
+      "heaviness": 1,
+      "digestionTime": 10,
+      "dominantDosha": "pitta",
+      "rasa": ["bitter"],
+      "vipaka": "pungent",
+      "notes": ["Astringent; avoid on empty stomach"],
+      "contraindications": ["empty_stomach"]
+    }
+  }
 ]

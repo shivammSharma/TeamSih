@@ -1,5 +1,10 @@
 import React, { useEffect } from "react";
 import Routes from "./Routes";
+import AyurChatWidget from "./components/chat/AyurChatWidget";
+
+
+
+
 
 const App = () => {
   useEffect(() => {
