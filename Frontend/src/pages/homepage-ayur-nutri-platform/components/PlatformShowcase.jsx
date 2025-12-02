@@ -1,343 +1,261 @@
-import React, { useState, useEffect } from 'react';
-import Icon from '../../../components/AppIcon';
+// src/pages/homepage-ayur-nutri-platform/components/PlatformShowcase.jsx
+
+import React, { useEffect, useState } from "react";
+import Icon from "../../../components/AppIcon";
 
 const PlatformShowcase = () => {
-  const [activeTab, setActiveTab] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-
-  const showcaseItems = [
-    {
-      id: 'ayurvedic-assessment',
-      title: 'Ayurvedic Constitutional Assessment',
-      subtitle: 'Ancient Wisdom',
-      description:
-        'Comprehensive dosha analysis using traditional Ayurvedic principles combined with modern questionnaire methodology.',
-      icon: 'Leaf',
-      color: 'text-green-600',
-      features: [
-        'Prakriti (Natural Constitution) Analysis',
-        'Vikriti (Current Imbalance) Detection',
-        'Seasonal & Lifestyle Factors',
-        'Pulse & Tongue Analysis Integration',
-      ],
-      visual: {
-        type: 'dosha-wheel',
-        data: {
-          vata: 35,
-          pitta: 40,
-          kapha: 25,
-        },
-      },
-    },
-    {
-      id: 'nutritional-science',
-      title: 'Modern Nutritional Analytics',
-      subtitle: 'Scientific Precision',
-      description:
-        'Evidence-based nutritional analysis with macro/micronutrient tracking and metabolic profiling.',
-      icon: 'BarChart3',
-      color: 'text-blue-600',
-      features: [
-        'Macro & Micronutrient Analysis',
-        'Metabolic Rate Calculations',
-        'Food Sensitivity Mapping',
-        'Biomarker Integration',
-      ],
-      visual: {
-        type: 'nutrition-chart',
-        data: {
-          protein: 25,
-          carbs: 45,
-          fats: 30,
-        },
-      },
-    },
-    {
-      id: 'ai-integration',
-      title: 'AI-Powered Personalization',
-      subtitle: 'Intelligent Synthesis',
-      description:
-        'Advanced algorithms that merge Ayurvedic wisdom with nutritional science for personalized recommendations.',
-      icon: 'Brain',
-      color: 'text-purple-600',
-      features: [
-        'Pattern Recognition & Learning',
-        'Personalized Meal Planning',
-        'Progress Prediction Modeling',
-        'Adaptive Recommendation Engine',
-      ],
-      visual: {
-        type: 'ai-network',
-        data: {
-          connections: 12,
-          accuracy: 94,
-          learning: 'active',
-        },
-      },
-    },
-  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
+        if (entry.isIntersecting) setIsVisible(true);
       },
-      { threshold: 0.3 }
+      { threshold: 0.2 }
     );
 
-    const element = document.getElementById('platform-showcase');
-    if (element) observer?.observe(element);
+    const el = document.getElementById("platform-showcase");
+    if (el) observer.observe(el);
 
-    return () => observer?.disconnect();
+    return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveTab((prev) => (prev + 1) % showcaseItems?.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  const problems = [
+    {
+      icon: "PenSquare",
+      title: "Manual, Time-Consuming Charts",
+      text: "Diet charts are handwritten and recreated at every visit, making it hard to standardize care.",
+    },
+    {
+      icon: "BarChart2",
+      title: "Generic Nutrition Software",
+      text: "Existing tools focus on macros and calories but ignore Rasa, Virya, Guna and digestibility.",
+    },
+    {
+      icon: "FileWarning",
+      title: "Fragmented Patient Information",
+      text: "Diet history, bowel movements, water intake and lifestyle notes live in different systems.",
+    },
+    {
+      icon: "FileOutput",
+      title: "No Standard, Shareable Output",
+      text: "It is difficult to give patients clear, printable diet charts aligned with Ayurvedic reasoning.",
+    },
+  ];
 
-  const renderVisual = (visual, isActive) => {
-    switch (visual?.type) {
-      case 'dosha-wheel':
-        return (
-          <div className="relative w-48 h-48 mx-auto">
-            <svg
-              className="w-full h-full transform -rotate-90"
-              viewBox="0 0 100 100"
-            >
-              <circle
-                cx="50"
-                cy="50"
-                r="40"
-                fill="none"
-                stroke="var(--color-border)"
-                strokeWidth="8"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="40"
-                fill="none"
-                stroke="var(--color-primary)"
-                strokeWidth="8"
-                strokeDasharray={`${visual?.data?.vata * 2.51} 251`}
-                strokeDashoffset="0"
-                className={`organic-transition duration-1000 ${
-                  isActive ? 'opacity-100' : 'opacity-50'
-                }`}
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="40"
-                fill="none"
-                stroke="var(--color-secondary)"
-                strokeWidth="8"
-                strokeDasharray={`${visual?.data?.pitta * 2.51} 251`}
-                strokeDashoffset={`-${visual?.data?.vata * 2.51}`}
-                className={`organic-transition duration-1000 delay-300 ${
-                  isActive ? 'opacity-100' : 'opacity-50'
-                }`}
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="40"
-                fill="none"
-                stroke="var(--color-accent)"
-                strokeWidth="8"
-                strokeDasharray={`${visual?.data?.kapha * 2.51} 251`}
-                strokeDashoffset={`-${
-                  (visual?.data?.vata + visual?.data?.pitta) * 2.51
-                }`}
-                className={`organic-transition duration-1000 delay-500 ${
-                  isActive ? 'opacity-100' : 'opacity-50'
-                }`}
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <Icon
-                  name="Leaf"
-                  size={24}
-                  className="text-primary mx-auto mb-1"
-                />
-                <div className="text-xs text-text-secondary">Balance</div>
-              </div>
-            </div>
-          </div>
-        );
+  const pillars = [
+    {
+      icon: "ClipboardList",
+      title: "Patient Context Workspace",
+      points: [
+        "Profiles with age, gender and life stage.",
+        "Diet habits, meal frequency, bowel patterns, water intake.",
+        "Space for clinical notes and key health parameters.",
+      ],
+    },
+    {
+      icon: "Database",
+      title: "Ayurvedic Food Intelligence Engine",
+      points: [
+        "Large, extensible food database for Indian & global cuisines.",
+        "Calories, macros and micronutrients mapped to Rasa, Virya, Guna.",
+        "Tags for hot/cold, light/heavy, easy/difficult to digest.",
+      ],
+    },
+    {
+      icon: "FileText",
+      title: "Automated Diet Chart Generation",
+      points: [
+        "Ayurveda-compliant, nutritionally balanced plans.",
+        "Recipe-based charts with automated nutrient analysis.",
+        "Clear, printable outputs for doctors, dietitians and patients.",
+      ],
+    },
+  ];
 
-      case 'nutrition-chart':
-        return (
-          <div className="space-y-4">
-            {Object.entries(visual?.data)?.map(([key, value], index) => (
-              <div key={key} className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="capitalize text-text-primary font-medium">
-                    {key}
-                  </span>
-                  <span className="text-text-secondary">{value}%</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full organic-transition duration-1000 ${
-                      index === 0
-                        ? 'bg-primary'
-                        : index === 1
-                        ? 'bg-secondary'
-                        : 'bg-accent'
-                    } ${isActive ? 'opacity-100' : 'opacity-50'}`}
-                    style={{
-                      width: isActive ? `${value}%` : '0%',
-                      transitionDelay: `${index * 200}ms`,
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        );
+  const intelligenceBulletsLeft = [
+    "Rasa (Taste) – 6 classical tastes linked to dosha impact.",
+    "Virya (Potency) – Hot / cold energy of each food item.",
+    "Guna (Qualities) – 20 attributes like heavy/light, dry/unctuous.",
+  ];
 
-      case 'ai-network':
-        return (
-          <div className="relative w-48 h-48 mx-auto">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div
-                className={`w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center organic-transition duration-1000 ${
-                  isActive ? 'scale-100' : 'scale-75'
-                }`}
-              >
-                <Icon name="Brain" size={24} className="text-primary" />
-              </div>
-            </div>
-            {[...Array(8)]?.map((_, i) => (
-              <div
-                key={i}
-                className={`absolute w-3 h-3 rounded-full bg-secondary/60 organic-transition duration-1000 ${
-                  isActive ? 'opacity-100' : 'opacity-30'
-                }`}
-                style={{
-                  top: `${50 + 35 * Math.sin((i * Math.PI * 2) / 8)}%`,
-                  left: `${50 + 35 * Math.cos((i * Math.PI * 2) / 8)}%`,
-                  transform: 'translate(-50%, -50%)',
-                  transitionDelay: `${i * 100}ms`,
-                }}
-              />
-            ))}
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
+  const intelligenceBulletsRight = [
+    "Digestibility – Easy or difficult to digest classification.",
+    "Meal Timing – Configurable for prakriti, age and lifestyle.",
+    "Meal Structure – Breakfast / lunch / dinner aligned to Agni.",
+  ];
 
   return (
     <section
       id="platform-showcase"
       className="py-20 bg-gradient-to-br from-muted/30 to-background"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section heading */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <Icon name="Zap" size={16} />
-            <span>Platform Innovation</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+        {/* 1. Problem section */}
+        <div
+          className={`organic-transition duration-1000 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <Icon name="AlertTriangle" size={16} />
+              <span>The Reality in Ayurvedic Hospitals Today</span>
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl font-display font-bold text-text-primary mb-4">
+              Handwritten Diet Charts Don’t Scale
+            </h2>
+
+            <p className="text-lg text-text-secondary max-w-3xl mx-auto">
+              Most Ayurvedic hospitals still rely on handwritten charts and
+              general-purpose nutrition tools. These approaches are slow,
+              difficult to standardize and rarely respect core Ayurvedic
+              concepts like Rasa, Virya, Guna and digestibility.
+            </p>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-text-primary mb-6">
-            The Perfect Synthesis of
-            <span className="block text-primary">Tradition &amp; Technology</span>
-          </h2>
-
-          <p className="text-lg text-text-secondary max-w-3xl mx-auto">
-            Our revolutionary platform seamlessly integrates ancient Ayurvedic
-            principles with modern nutritional science, powered by advanced AI
-            to deliver truly personalized healthcare solutions.
-          </p>
+          <div className="grid md:grid-cols-2 gap-6">
+            {problems.map((problem) => (
+              <div
+                key={problem.title}
+                className="bg-card rounded-2xl border border-border p-6 organic-shadow flex gap-4"
+              >
+                <div className="mt-1">
+                  <div className="p-3 rounded-xl bg-primary/10">
+                    <Icon
+                      name={problem.icon}
+                      size={18}
+                      className="text-primary"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-text-primary mb-1">
+                    {problem.title}
+                  </h3>
+                  <p className="text-sm text-text-secondary">{problem.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* NOTE: the two big cards (Ancient Wisdom / Modern Precision) were here. 
-            They are intentionally removed now. */}
+        {/* 2. What AyurNutri solves – pillars */}
+        <div
+          className={`organic-transition duration-1000 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
+          <div className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-display font-bold text-text-primary mb-4">
+              What AyurNutri Solves
+            </h2>
+            <p className="text-lg text-text-secondary max-w-3xl mx-auto">
+              A dedicated Ayurvedic Diet Management Software that respects both
+              modern nutritional science and traditional Ayurvedic dietary
+              principles – in a single, clinician-friendly interface.
+            </p>
+          </div>
 
-        {/* Integration Showcase */}
-        <div className="mt-4">
-          <div className="bg-card rounded-2xl p-8 organic-shadow border border-border">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center space-x-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-4">
-                <Icon name="Zap" size={16} />
-                <span>AI-Powered Integration</span>
-              </div>
-              <h3 className="text-2xl font-display font-bold text-text-primary mb-4">
-                Intelligent Synthesis in Action
-              </h3>
-              <p className="text-text-secondary max-w-2xl mx-auto">
-                Watch how our AI seamlessly combines constitutional analysis
-                with nutritional requirements to generate personalized
-                recommendations.
-              </p>
-            </div>
-
-            {/* Tab Navigation */}
-            <div className="flex justify-center mb-8">
-              <div className="flex space-x-1 bg-muted/50 rounded-lg p-1">
-                {showcaseItems?.map((item, index) => (
-                  <button
-                    key={item?.id}
-                    onClick={() => setActiveTab(index)}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium organic-transition ${
-                      activeTab === index
-                        ? 'bg-background text-text-primary shadow-sm'
-                        : 'text-text-secondary hover:text-text-primary'
-                    }`}
-                  >
+          <div className="grid md:grid-cols-3 gap-6">
+            {pillars.map((pillar) => (
+              <div
+                key={pillar.title}
+                className="bg-card rounded-2xl border border-border p-6 organic-shadow flex flex-col"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 rounded-xl bg-primary/10">
                     <Icon
-                      name={item?.icon}
-                      size={16}
-                      className={item?.color}
+                      name={pillar.icon}
+                      size={20}
+                      className="text-primary"
                     />
-                    <span className="hidden sm:inline">{item?.subtitle}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Active Content */}
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h4 className="text-xl font-display font-bold text-text-primary mb-4">
-                  {showcaseItems?.[activeTab]?.title}
-                </h4>
-                <p className="text-text-secondary mb-6">
-                  {showcaseItems?.[activeTab]?.description}
-                </p>
-                <ul className="space-y-2">
-                  {showcaseItems?.[activeTab]?.features?.map(
-                    (feature, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center space-x-2 text-sm text-text-secondary"
-                      >
-                        <Icon
-                          name="Check"
-                          size={14}
-                          className="text-primary"
-                        />
-                        <span>{feature}</span>
-                      </li>
-                    )
-                  )}
+                  </div>
+                  <h3 className="text-base font-semibold text-text-primary">
+                    {pillar.title}
+                  </h3>
+                </div>
+                <ul className="space-y-2 text-sm text-text-secondary">
+                  {pillar.points.map((pt) => (
+                    <li key={pt} className="flex gap-2 items-start">
+                      <Icon
+                        name="Check"
+                        size={14}
+                        className="mt-0.5 text-primary"
+                      />
+                      <span>{pt}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
+            ))}
+          </div>
+        </div>
 
-              <div className="flex justify-center">
-                {renderVisual(showcaseItems?.[activeTab]?.visual, true)}
+        {/* 3. Ayurvedic intelligence inside */}
+        <div
+          className={`organic-transition duration-1000 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
+          <div className="bg-card rounded-3xl border border-border organic-shadow p-8 sm:p-10">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 mb-8">
+              <div className="max-w-md space-y-3">
+                <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
+                  <Icon name="Leaf" size={14} />
+                  <span>Ayurvedic Intelligence Inside</span>
+                </div>
+                <h3 className="text-2xl font-display font-bold text-text-primary">
+                  Ayurvedic Intelligence at the Core
+                </h3>
+                <p className="text-sm sm:text-base text-text-secondary">
+                  AyurNutri does more than count calories. Every food decision
+                  is informed by classical Ayurvedic properties so practitioners
+                  can reason in their own language while benefiting from modern
+                  nutrient data.
+                </p>
               </div>
+
+              {/* Simple icon cluster */}
+              <div className="flex items-center gap-4">
+                <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <Icon name="Atom" size={24} className="text-primary" />
+                </div>
+                <div className="h-10 w-10 rounded-2xl bg-secondary/10 flex items-center justify-center">
+                  <Icon name="Droplets" size={18} className="text-secondary" />
+                </div>
+                <div className="h-8 w-8 rounded-2xl bg-accent/10 flex items-center justify-center">
+                  <Icon name="Sparkles" size={16} className="text-accent" />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 text-sm">
+              <ul className="space-y-3 text-text-secondary">
+                {intelligenceBulletsLeft.map((item) => (
+                  <li key={item} className="flex gap-2 items-start">
+                    <Icon
+                      name="ChevronRight"
+                      size={14}
+                      className="mt-0.5 text-primary"
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <ul className="space-y-3 text-text-secondary">
+                {intelligenceBulletsRight.map((item) => (
+                  <li key={item} className="flex gap-2 items-start">
+                    <Icon
+                      name="ChevronRight"
+                      size={14}
+                      className="mt-0.5 text-primary"
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
